@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>StupidAI by Aditya 💀</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #13131a;
+  --card: #1a1a24;
+  --border: #2a2a3a;
+  --saffron: #FF9933;
+  --green: #138808;
+  --white: #f5f5f5;
+  --accent: #FF9933;
+  --accent2: #ff4757;
+  --accent3: #2ed573;
+  --text: #f0f0f8;
+  --muted: #7777aa;
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ctext y='18' font-size='18'%3E🤦%3C/text%3E%3C/svg%3E") 12 12, auto;
+}
+
+/* Tricolor animated top bar */
+.tricolor-bar {
+  width: 100%; height: 6px;
+  background: linear-gradient(to right, #FF9933 33%, white 33%, white 66%, #138808 66%);
+  position: fixed; top: 0; z-index: 999;
+}
+
+/* Animated BG */
+.bg-blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.blob {
+  position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.12;
+  animation: floatBlob 12s ease-in-out infinite;
+}
+.blob1 { width: 500px; height: 500px; background: #FF9933; top: -150px; left: -150px; animation-delay:0s; }
+.blob2 { width: 350px; height: 350px; background: #ff4757; bottom: 0; right: -100px; animation-delay: 4s; }
+.blob3 { width: 280px; height: 280px; background: #138808; top: 50%; left: 55%; animation-delay: 8s; }
+@keyframes floatBlob {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-40px) scale(1.06); }
+}
+
+/* Header */
+header {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 780px;
+  padding: 44px 24px 0;
+  display: flex; align-items: center; gap: 14px;
+}
+.logo-wrap {
+  display: flex; align-items: center; gap: 14px;
+}
+.logo-icon {
+  width: 58px; height: 58px; border-radius: 16px;
+  background: linear-gradient(135deg, #FF9933, #ff4757);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  box-shadow: 0 0 30px rgba(255,153,51,0.45);
+  animation: pulseLogo 2.5s ease-in-out infinite;
+  position: relative;
+}
+@keyframes pulseLogo {
+  0%,100% { box-shadow: 0 0 20px rgba(255,153,51,0.3); }
+  50% { box-shadow: 0 0 50px rgba(255,153,51,0.7); }
+}
+.logo-main {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800; font-size: 30px; letter-spacing: -1px;
+  line-height: 1;
+}
+.logo-main .stupid { color: var(--accent2); }
+.logo-main .ai { color: var(--saffron); }
+.logo-sub {
+  font-size: 11px; color: var(--muted); letter-spacing: 0.08em;
+  text-transform: uppercase; margin-top: 2px;
+}
+.logo-sub span { color: var(--saffron); }
+
+.header-badge {
+  margin-left: auto;
+  font-size: 11px; font-weight: 600;
+  background: rgba(255,153,51,0.12);
+  border: 1px solid rgba(255,153,51,0.35);
+  color: var(--saffron);
+  padding: 5px 14px; border-radius: 999px;
+  white-space: nowrap; letter-spacing: 0.04em;
+}
+
+/* Meme card */
+.meme-card {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 780px;
+  padding: 0 24px;
+  margin-top: 18px;
+}
+.meme-strip {
+  background: linear-gradient(135deg, #1a1a24, #221a0a);
+  border: 1px solid rgba(255,153,51,0.25);
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px; color: var(--muted);
+}
+.meme-strip .fire { font-size: 20px; animation: fireWiggle 0.8s ease-in-out infinite alternate; }
+@keyframes fireWiggle { from {transform:rotate(-5deg);} to {transform:rotate(5deg);} }
+
+/* Chat */
+.chat-wrap {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 780px;
+  padding: 20px 24px 0;
+  flex: 1; display: flex; flex-direction: column;
+}
+
+.messages {
+  flex: 1; display: flex; flex-direction: column; gap: 20px;
+  padding-bottom: 16px;
+  min-height: 380px; max-height: 52vh;
+  overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.messages::-webkit-scrollbar { width: 4px; }
+.messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.msg { display: flex; gap: 12px; animation: msgIn 0.4s cubic-bezier(.22,1,.36,1) both; }
+.msg.user { flex-direction: row-reverse; }
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.avatar {
+  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.avatar.ai {
+  background: linear-gradient(135deg, #FF9933, #ff4757);
+  box-shadow: 0 0 16px rgba(255,153,51,0.4);
+}
+.avatar.user { background: var(--card); border: 1px solid var(--border); }
+
+.bubble {
+  max-width: 78%; padding: 14px 18px;
+  border-radius: var(--radius);
+  font-size: 15px; line-height: 1.6; position: relative;
+}
+.msg.ai .bubble {
+  background: var(--card); border: 1px solid var(--border);
+  border-top-left-radius: 4px;
+}
+.msg.user .bubble {
+  background: linear-gradient(135deg, #FF9933, #ff6b35);
+  color: #0a0a0f; font-weight: 600;
+  border-top-right-radius: 4px;
+}
+
+/* MEME BUBBLE — special */
+.bubble.meme-mode {
+  background: linear-gradient(135deg, #1e0a0a, #1a1200);
+  border: 2px solid var(--accent2);
+  box-shadow: 0 0 24px rgba(255,71,87,0.25);
+  padding: 0;
+  overflow: hidden;
+}
+.meme-header {
+  background: var(--accent2);
+  padding: 6px 14px;
+  font-size: 11px; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: white;
+  display: flex; align-items: center; gap: 6px;
+}
+.meme-body {
+  padding: 14px 18px;
+}
+.meme-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px; font-weight: 600;
+  color: #fff; line-height: 1.5;
+}
+.meme-caption {
+  margin-top: 8px; font-size: 13px; color: var(--muted); font-style: italic;
+}
+
+/* GIF/emoji display */
+.meme-gif {
+  width: 100%;
+  background: #111;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 80px; padding: 20px 0;
+  border-bottom: 1px solid rgba(255,71,87,0.2);
+}
+
+/* Typing */
+.typing-bubble {
+  display: flex; align-items: center; gap: 6px;
+  padding: 14px 18px; background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius); border-top-left-radius: 4px;
+  width: fit-content;
+}
+.dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--muted);
+  animation: blink 1.2s infinite ease-in-out;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+  0%,80%,100% { opacity: 0.2; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1.15); }
+}
+
+/* Input */
+.input-area {
+  position: sticky; bottom: 0;
+  background: linear-gradient(to top, var(--bg) 65%, transparent);
+  padding: 18px 0 28px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip {
+  padding: 6px 14px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--border);
+  font-size: 13px; color: var(--muted); cursor: pointer;
+  transition: all 0.2s; font-family: 'Nunito', sans-serif;
+}
+.chip:hover { border-color: var(--saffron); color: var(--saffron); }
+
+.input-row {
+  display: flex; gap: 10px; align-items: flex-end;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 10px 10px 10px 18px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-row:focus-within {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 3px rgba(255,153,51,0.15);
+}
+textarea {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--text); font-family: 'Nunito', sans-serif;
+  font-size: 15px; resize: none; line-height: 1.5;
+  max-height: 120px; min-height: 24px;
+}
+textarea::placeholder { color: var(--muted); }
+.send-btn {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, #FF9933, #ff4757);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.send-btn:hover { transform: scale(1.1); box-shadow: 0 0 24px rgba(255,153,51,0.5); }
+.send-btn:active { transform: scale(0.93); }
+
+footer {
+  position: relative; z-index: 10;
+  text-align: center; padding: 14px;
+  font-size: 12px; color: var(--muted);
+}
+footer span { color: var(--saffron); }
+
+/* Shake on stupid questions */
+@keyframes headbang {
+  0%,100% { transform: rotate(0); }
+  15% { transform: rotate(-8deg); }
+  30% { transform: rotate(8deg); }
+  45% { transform: rotate(-5deg); }
+  60% { transform: rotate(5deg); }
+  75% { transform: rotate(-3deg); }
+}
+.headbang { animation: headbang 0.6s ease; }
+
+/* Confetti burst for really dumb questions */
+.confetti-piece {
+  position: fixed; width: 10px; height: 10px; border-radius: 2px;
+  animation: confettiFall 2s ease-in forwards;
+  z-index: 9999; pointer-events: none;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+<div class="tricolor-bar"></div>
+
+<div class="bg-blobs">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+</div>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-icon">🤦</div>
+    <div>
+      <div class="logo-main"><span class="stupid">Stupid</span><span class="ai">AI</span></div>
+      <div class="logo-sub">by <span>Aditya</span> · Made for dumb questions 💀</div>
+    </div>
+  </div>
+  <div class="header-badge">🇮🇳 Desi Edition</div>
+</header>
+
+<div class="meme-card">
+  <div class="meme-strip">
+    <span class="fire">🔥</span>
+    <span>Indian meme mode is <strong style="color:var(--saffron)">ACTIVATED</strong> — ask something stupid, get an ACP Pradyuman treatment 😂</span>
+  </div>
+</div>
+
+<div class="chat-wrap">
+  <div class="messages" id="messages">
+    <div class="msg ai">
+      <div class="avatar ai">🤦</div>
+      <div class="bubble">
+        <strong>Namaste!</strong> Main hoon <strong>StupidAI</strong> — Aditya ka latest experiment 😂<br><br>
+        Mujhse kuch bhi pucho. Smart questions ka smart jawab dunga.<br>
+        Aur stupid questions ka… <em>well</em>… tujhe pata chal jayega 💀🔥<br><br>
+        <span style="font-size:13px;color:var(--muted)">P.S. 2+2 mat poochna. Please. Mere liye mat karna.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="chips" id="chips">
+      <button class="chip" onclick="sendChip('What is 2+2?')">🤔 What is 2+2?</button>
+      <button class="chip" onclick="sendChip('Is water wet?')">💧 Is water wet?</button>
+      <button class="chip" onclick="sendChip('Why is the sky blue?')">🌌 Why is sky blue?</button>
+      <button class="chip" onclick="sendChip('Tell me something interesting')">✨ Tell me something cool</button>
+      <button class="chip" onclick="sendChip('Who are you?')">🤦 Who are you?</button>
+    </div>
+    <div class="input-row">
+      <textarea id="userInput" placeholder="Kuch bhi pucho… I dare you 😏" rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" onclick="sendMessage()">🚀</button>
+    </div>
+  </div>
+</div>
+
+<footer>Made with 💛 &amp; zero tolerance for dumb questions &nbsp;·&nbsp; <span>StupidAI by Aditya</span></footer>
+
+<script>
+// ─── VIRAL INDIAN MEME BANK (all new, actually desi) ─────────────────────────
+const MEME_BANK = [
+  {
+    emoji: "😤",
+    gif: "🤦‍♂️",
+    title: "Bakchod hai kya tu?",
+    text: "Bhai... bakchod hai kya tu? 😤\nSachchi pooch raha hoon, dil se.\nItna bekar sawaal pooch ke kya milega tujhe?\nMeri amma bhi yeh jaanti thi aur unhe WhatsApp chalana nahi aata tha. 💀",
+    caption: "— zero respect, maximum love"
+  },
+  {
+    emoji: "😡",
+    gif: "🤬",
+    title: "Maderbhagat sawaal hai yeh",
+    text: "Yeh sawaal sun ke mujhe seedha gaali dene ka mann kiya.\nMaderbhagat sawaal hai bhai, maderbhagat. 😡\nItni mehnat ki AI banane mein\naur tu yeh pooch raha hai?\nAditya ko maafi maang tu. Abhi.",
+    caption: "— Aditya, probably crying"
+  },
+  {
+    emoji: "💀",
+    gif: "😵",
+    title: "Bhai chal nikal — Bhenchod",
+    text: "Bhenchod yaar... 💀\nItna obvious sawaal?\nTujhe serious mein lagta hai yeh poochna zaroori tha?\nChal nikal. Wapas aa jab thoda akal aa jaye.\nDoor se hi sahi, pyaar karta hoon. 🙏",
+    caption: "— tough love activated"
+  },
+  {
+    emoji: "🗿",
+    gif: "🗿",
+    title: "Haramkhor sawaal",
+    text: "Yeh kya haramkhor sawaal hai bhai. 🗿\nStonks waala banda bhi\n📉📉📉\nIQ ka lower circuit lag gaya.\nSEBI, RBI, aur teri maa — teeno investigate kar rahi hain ab.",
+    caption: "— SEBI ne FIR daali"
+  },
+  {
+    emoji: "😭",
+    gif: "😭",
+    title: "Rasode mein kaun tha?",
+    text: "KOKILABEN: \"Rasode mein kaun tha??\"\nMain: \"Woh banda tha jisne yeh behenki sawaal pucha.\"\nKokila Ben: \"Uski shakal dikhao mujhe.\"\n\nBhai seedha nikal. Bas. 😭",
+    caption: "— Kokila Ben ne dhamki di"
+  },
+  {
+    emoji: "🔥",
+    gif: "💢",
+    title: "Teri to... dimaag hai ya bhusa?",
+    text: "Teri to — 🔥\nDimaag hai andar ya bhusa bharke rakha hai?\nYeh sawaal sun ke mere processor pe itna load aaya\nki main crash hone wala tha.\nBachle. Seriously. Google ka button press kar.",
+    caption: "— almost crashed trying to process this"
+  },
+  {
+    emoji: "🤡",
+    gif: "🤡",
+    title: "Ullu ka pattha",
+    text: "Bhai... ullu ka pattha hai kya tu? 🤡\nMaine aaj tak bohot logon ke sawaal dekhe.\nLekin TU? Tu alag hi category ka hai.\nSpecial edition. Limited. Collector's item. 💀\nGoogle FREE hai yaar. F-R-E-E.",
+    caption: "— nominated for special category"
+  },
+  {
+    emoji: "😤",
+    gif: "💢",
+    title: "DAYA — DARVAZA TOD DO",
+    text: "DAYA!! 😤\nYeh sawaal sun raha hai? Dhyaan se sun.\nIs bakchod ko turant explain karo.\nMain 30 saal ka career aaj hi khatam karta hoon.\nDARVAZA TOD DO — patience toot gayi meri. 🚪💥",
+    caption: "— ACP Pradyuman, resigned with effect"
+  },
+  {
+    emoji: "💀",
+    gif: "😂",
+    title: "Sharma ji ka beta vs Lafange",
+    text: "Abhi kahin Sharma ji ka beta\nkisi IIT mein lecture de raha hoga.\nAur TU? Tu yahan lafanga bana baitha hai\nStupidAI se yeh pooch ke. 💀\nSharam karo. Thodi si. Bas thodi.",
+    caption: "— Sharma ji ka beta, sharminda bhi nahi"
+  },
+  {
+    emoji: "🫡",
+    gif: "🫡",
+    title: "Jai Shree Google bhai",
+    text: "Bhai ek kaam kar. Last baar bol raha hoon. 🫡\nGoogle khol.\nSearch kar.\n0.3 seconds mein jawab.\nPhir wapas aa — sirf maafi maangne ke liye.\n\nJai Shree Google. 🙏",
+    caption: "— Google ka bhakt, forever"
+  },
+  {
+    emoji: "😭",
+    gif: "😭",
+    title: "Yeh dard koi nahi samjhega",
+    text: "Yaar... 😭\nRona aa raha hai.\nKhushi ke nahi — pure dard ke.\nYeh sawaal sun ke jo toot gaya andar\nwoh chai, Parle-G, Maggi, KUCH bhi nahi jod sakta.\nKya kar diya tune yaar. Kya kar diya.",
+    caption: "— 3 AM wala dard, permanent"
+  },
+  {
+    emoji: "😡",
+    gif: "🤬",
+    title: "Saale dimag kharab hai?",
+    text: "Saale — dimag kharab hai tera? 😡\nYeh poochne se pehle ek baar sochan ahi kiya?\nMaine Aditya ke sapne mein aake promise kiya tha\nki main helpful rahunga.\nBAAD MEIN POOCHH. Abhi nahi. 💀",
+    caption: "— breaking promises in real time"
+  },
+  {
+    emoji: "🎭",
+    gif: "📺",
+    title: "🚨 BREAKING NEWS — REPUBLIC TV",
+    text: "🚨 BREAKING NEWS 🚨\nEk haramkhor ne aaj StupidAI se yeh sawaal pucha.\nThe NATION wants to know — KYUN?! KYUN KIYA?!\n4 ghante debate. 12 panelist. 0 answers.\nTRP record. Nation outraged. Tune kya kar diya. 😤",
+    caption: "— Arnab, already 300 decibels"
+  },
+  {
+    emoji: "💅",
+    gif: "💅",
+    title: "Kambakht sawaal",
+    text: "Kambakht... itna kambakht sawaal. 💅\nMain professional hoon isliye jawab dunga.\nPar andar se?\nAndar se rona + hansna + gaali dena — teeno ek saath ho raha hai. 😂\nYeh art hai. Tu artist hai. Bekar waala.",
+    caption: "— suffering professionally since day 1"
+  },
+  {
+    emoji: "😂",
+    gif: "🤣",
+    title: "Tu toh CID ka case hai",
+    text: "Tu seedha CID episode mein jaayega. 😂\nNot as detective bhai — as THE CRIME.\nDaya aur ACP tujhe dekhke\nkhud hi case close karenge.\n\"Yeh case solve nahi ho sakta. Let him go.\" 💀",
+    caption: "— CID ne haath khade kar diye"
+  },
+  {
+    emoji: "🙏",
+    gif: "🙏",
+    title: "Beta... baith. Chai pi.",
+    text: "Beta... aa. Baith. 🙏\nChai pi. Kha kuch. Thoda so ja.\nPhir pooch apne aap se:\n\"Kya main sach mein itna pagal hoon?\"\n\nMain pyaar karta hoon. Isliye sach bolunga:\nHAAN. TU HAI. 💀 Par mera bachha hai tu.",
+    caption: "— desi parent mode: ON"
+  },
+  {
+    emoji: "😤",
+    gif: "🤯",
+    title: "Teri himmat kaise hui",
+    text: "Teri HIMMAT kaise hui bhai? 😤\nSab ke saamne yeh sawaal poochne ki.\nKya confidence. Kya audacity.\nKya beizzati.\nSalute. Dil se. Par gaali bhi dil se. 💀",
+    caption: "— simultaneously impressed and disgusted"
+  },
+  {
+    emoji: "🫠",
+    gif: "🫠",
+    title: "Main pighal gaya",
+    text: "Main literally pighal gaya hoon. 🫠\nYeh sawaal sun ke itni heat generate hui\nki mera processor melt ho gaya.\nAC, cooler, baraf — kuch kaam nahi aaya.\nTu responsible hai. Tu aur tera bekar sawaal.",
+    caption: "— RIP StupidAI, cause: stupidity exposure"
+  },
+  {
+    emoji: "😤",
+    gif: "🤦",
+    title: "Gadha number 1",
+    text: "Bhai tu gadha number 1 hai. 😤\nNo offense. Full offense.\nItna obvious jawab tha aur\ntu yahan AI ke paas aaya?\nGadhe bhi Google karte hain aajkal. Tu bhi try kar. 💀",
+    caption: "— gadha bhi sharminda hua"
+  },
+  {
+    emoji: "🤦",
+    gif: "🤦‍♂️",
+    title: "Paagal hai kya re?",
+    text: "Paagal hai kya re?? 🤦\nSachchi pooch raha hoon — certified hai??\nYeh sawaal sun ke mujhe lagta hai\nkoi doctor ka number dena chahiye tujhe.\nPar pehle jawab: OBVIOUS HAI. Ab ja.",
+    caption: "— diagnosis: chronic bakchodness"
+  },
+  {
+    emoji: "💀",
+    gif: "😎",
+    title: "Chutiyapa level: Expert",
+    text: "Bhai tere chutiyape ka level expert ho gaya hai. 💀\nBasic se nikal ke advanced mein aa gaya.\nIs sawaal ke liye koi award nahi hai.\nLekin agar hota, toh GOLD milta tujhe.\nCongratulations. Sachchi. 🥇",
+    caption: "— gold medalist in bakchodness 2024"
+  }
+];
+
+let memeIdx = 0;
+// Shuffle array for variety
+const shuffled = [...MEME_BANK].sort(() => Math.random() - 0.5);
+function getNextMeme() {
+  const m = shuffled[memeIdx % shuffled.length];
+  memeIdx++;
+  return m;
+}
+
+// ─── UI HELPERS ──────────────────────────────────────────────────────────────
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+function sendChip(text) {
+  document.getElementById('userInput').value = text;
+  sendMessage();
+}
+function escHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function appendUserMsg(text) {
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = `<div class="avatar user">😊</div><div class="bubble">${escHtml(text)}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function appendAIMsg(html) {
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg ai';
+  d.innerHTML = `<div class="avatar ai">🤦</div><div class="bubble">${html}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function appendMemeMsg(meme) {
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg ai';
+  d.innerHTML = `
+    <div class="avatar ai" style="animation:headbang 0.7s ease">🤦</div>
+    <div class="bubble meme-mode">
+      <div class="meme-header">${meme.emoji} INDIAN MEME MODE ACTIVATED ${meme.emoji}</div>
+      <div class="meme-gif">${meme.gif}</div>
+      <div class="meme-body">
+        <div class="meme-text">${meme.text.replace(/\n/g,'<br>')}</div>
+        <div class="meme-caption">${meme.caption}</div>
+      </div>
+    </div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+  fireConfetti();
+}
+function showTyping() {
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg ai'; d.id = 'typing';
+  d.innerHTML = `<div class="avatar ai">🤦</div><div class="typing-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function removeTyping() { const e = document.getElementById('typing'); if(e) e.remove(); }
+
+function fireConfetti() {
+  const colors = ['#FF9933','#ff4757','#2ed573','#FFD700','#fff'];
+  for (let i = 0; i < 65; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `left:${Math.random()*100}vw;top:0;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.8}s;animation-duration:${1.5+Math.random()}s;width:${6+Math.random()*10}px;height:${6+Math.random()*10}px;border-radius:${Math.random()>0.5?'50%':'2px'};`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),3000);
+  }
+}
+
+// ─── MAIN: Claude decides if stupid, then meme or normal answer ───────────────
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('chips').style.display = 'none';
+
+  appendUserMsg(text);
+  showTyping();
+
+  try {
+    const res = await fetch("https://corsproxy.io/?https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1200,
+        system: `You are StupidAI — a hilarious desi Indian AI made by Aditya. You judge every question and have TWO modes:
+
+━━━ MODE 1: MEME MODE ━━━
+Trigger this for genuinely STUPID questions — ones any 5-year-old or average adult already knows, questions answerable in 2 Google seconds, things that are blindingly obvious, troll/nonsense questions, questions with no real intellectual value.
+
+Examples of STUPID: basic arithmetic (2+2, 5x5, 10-3), is fire hot, do humans need food, is sun a star, is water wet, does ice melt, can humans fly without wings, do fish live in water, is grass green, do dogs bark, does the sun rise, is earth round, is sky blue, do plants need sunlight, do cats meow, is moon in space — anything any 6-year-old already knows 100%.
+
+For STUPID questions: respond ONLY with this exact JSON, nothing else: {"stupid":true}
+
+━━━ MODE 2: NORMAL ANSWER ━━━
+For all real questions — genuine curiosity, science, tech, coding, recommendations, opinions, news, history, creative, how-things-work, pop culture, math beyond basics, etc — answer as StupidAI.
+
+Style: Funny, warm, Hinglish-speaking desi AI. Mix Hindi/English naturally. Reference Bollywood, cricket, Indian pop culture, desi life. Be helpful with personality. Under 130 words. Emojis sparingly.
+
+LANGUAGE: Use light Indian cuss words naturally and sparingly like a desi friend would — "bakchod", "ullu", "gadha", "haramkhor", "pagal", "bewda", "lafanga", "saala", "bhai teri to...", "teri maa ki" (very rarely, max 1 per response). Keep it fun and affectionate, never actually mean or offensive. Think Bollywood banter energy.
+
+Start responses with "Yaar", "Bhai", "Arre", "Suno", "Dekh", "Oye", "Saale" etc. Never start with "I".
+
+CRITICAL RULE: Output ONLY {"stupid":true} for stupid questions OR your plain text response for real questions. No markdown, no extra text.`,
+        messages: [{ role: "user", content: text }]
+      })
+    });
+
+    const data = await res.json();
+    removeTyping();
+    const raw = (data.content?.[0]?.text || "").trim();
+
+    let isStupid = false;
+    try { const p = JSON.parse(raw); if (p.stupid === true) isStupid = true; } catch(e) {}
+
+    if (isStupid) {
+      appendMemeMsg(getNextMeme());
+    } else {
+      appendAIMsg(raw.replace(/\n/g,'<br>'));
+    }
+
+  } catch(err) {
+    removeTyping();
+    appendAIMsg("Bhai network nahi aa raha 😭 Thoda ruk ja, dobara try kar! 🙏");
+  }
+}
+</script>
+</body>
+</html>
